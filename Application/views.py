@@ -1,4 +1,8 @@
+from .models import CustomerManager, Customer
 from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import render, redirect
+from .models import Customer
 import re
 import random
 import json
@@ -45,7 +49,6 @@ def create_customer(request):
         email = request.POST.get('email')
         id = generate_customer_code(name, phone)
 
-        print(name, phone, email, id)
         # Load existing customer data from JSON file
         try:
             with open('Application\static\customers.json', 'r') as file:
@@ -56,7 +59,7 @@ def create_customer(request):
 
         # Add new customer data
         new_customer = {'id': id, 'name': name,
-                        'phone_number': phone, 'email': email}
+                        'phone_number': phone, 'email': email, 'status':"IN"}
         customers.append(new_customer)
 
         # Save updated customer data back to JSON file
@@ -83,3 +86,30 @@ def booking(request):
 def customer_list(request):
     return render(request, 'view_customer.html')
 
+def update_customer_details(request, customer_id):
+    customer_manager = CustomerManager()
+
+    selected_customer = customer_manager.get_customer(customer_id)
+    print (selected_customer)
+    if selected_customer:
+        if request.method == 'POST':
+            # Update customer details based on the form submission
+            update_data = {
+                'name': request.POST.get('name'),
+                'phone_number': request.POST.get('phone_number'),
+                'email': request.POST.get('email'),
+                'status': request.POST.get('status'),
+            }
+
+            if customer_manager.update_customer(customer_id, update_data):
+                # Redirect or perform additional actions after successful update
+                # For example, you might want to redirect to the customer details page
+                return JsonResponse({'message': 'Customer details updated successfully'})
+            else:
+                return JsonResponse({'error': 'Failed to update customer details'}, status=500)
+        else:
+            # Render the update_customer_details.html template with preloaded data
+            return render(request, 'update_customer_details.html', {'customer': selected_customer})
+    else:
+        # Handle the case where the customer with the given ID is not found
+        return JsonResponse({'error': 'Customer not found'}, status=404)

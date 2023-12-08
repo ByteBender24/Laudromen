@@ -1,20 +1,23 @@
 [
   {
-    "id": "HAR981312",
-    "name": "Harishraj Selvakumar",
-    "phone_number": "12312",
-    "email": "harishrajselva@gmail.com"
+    "id": "HAR901234",
+    "name": "Harishraj S",
+    "phone_number": "994471890",
+    "email": "lewinpp@gmail.com",
+    "status": "OUT"
   },
   {
-    "id": "PRA351312",
-    "name": "Pranesh Kumar S P",
-    "phone_number": "2312",
-    "email": "pp@gmail.com"
+    "id": "LEW427979",
+    "name": "lewing",
+    "phone_number": "8787979",
+    "email": "harishrajselva@gmail.com",
+    "status": "IN"
   },
   {
-    "id": "HAR745",
-    "name": "Harishraj",
-    "phone_number": "fdfd",
-    "email": "harishrajselva@gmail.com"
+    "id": "AKR997696",
+    "name": "AKRAM",
+    "phone_number": "696969696",
+    "email": "gayuuykram@gmail.com",
+    "status": "OUT"
   }
 ]
