@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Service Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+
+        .box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'customer_list' %}">Customers</a>
+        <a href="{% url 'machine_list' %}">Machines</a>
+        <a href="{% url 'booking' %}">Bookings</a>
+        <a href="{% url 'generate_reports' %}">Reports</a>
+    </nav>
+
+    <div class="container">
+        <div class="box">
+            <h2>Customers</h2>
+            <p>Manage customer details</p>
+            <a href="{% url 'create_customer' %}">Create Customer</a>
+            <a href="{% url 'customer_list' %}">View Customers</a>
+        </div>
+
+        <div class="box">
+            <h2>Machines</h2>
+            <p>View and manage washing machines</p>
+            <a href="{% url 'machine_list' %}">View Machines</a>
+        </div>
+
+        <div class="box">
+            <h2>Bookings</h2>
+            <p>Manage laundry bookings</p>
+            <a href="{% url 'booking' %}">Booking</a>
+        </div>
+
+        <div class="box">
+            <h2>Reports</h2>
+            <p>Generate and view reports</p>
+            <a href="{% url 'generate_reports' %}">Generate Reports</a>
+        </div>
+    </div>
+</body>
+</html>

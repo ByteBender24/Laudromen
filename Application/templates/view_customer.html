@@ -1,0 +1,194 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <title>View Customers</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px; /* Increase the max-width as needed */
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #customers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #customers-table th,
+        #customers-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #search-bar {
+            float: right;
+            margin-bottom: 20px;
+        }
+
+        #customers-table td:nth-child(2) {
+            width: 200px; /* Adjust the width as needed */
+        }
+
+        /* Style for the "View" button */
+        #customers-table td button {
+            padding: 5px 10px;
+            background-color: #4caf50; /* Green background color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover effect for the button */
+        #customers-table td button:hover {
+            background-color: #45a049; /* Darker green color on hover */
+        }
+
+        /* Style for the "Close" button */
+        .close-button {
+            padding: 8px 16px;
+            background-color: #e53e3e; /* Red background color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover effect for the "Close" button */
+        .close-button:hover {
+            background-color: #c53030; /* Darker red color on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="text-2xl font-semibold mb-6">View Customers</h2>
+
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" placeholder="Search by name..." class="p-2 border rounded-md" />
+        
+        <!-- Customer Table -->
+        <table id="customers-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>View</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody id="customers-table-body">
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Load customer data from JSON file
+        let customers = [];
+
+        // Fetch the data from the JSON file or your Django endpoint
+        fetch('{% static "customers.json" %}')
+            .then(response => response.json())
+            .then(data => {
+                customers = data;
+                updateTable();
+            })
+            .catch(error => console.error('Error fetching customer data:', error));
+
+        // Search bar input event listener
+        document.getElementById('search-bar').addEventListener('input', updateTable);
+
+        // Function to update the table based on the search input
+        function updateTable() {
+            const searchInput = document.getElementById('search-bar').value.toLowerCase();
+            const tableBody = document.getElementById('customers-table-body');
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            // Filter customers based on search input
+            const filteredCustomers = customers.filter(customer => customer.name.toLowerCase().startsWith(searchInput));
+
+            // Populate the table with filtered customers
+            filteredCustomers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${customer.id}</td>
+                                 <td>${customer.name}</td>
+                                 <td>${customer.phone_number}</td>
+                                 <td>${customer.email}</td>
+                                 <td>${customer.status}</td>
+                                 <td><button onclick="viewCustomer('${customer.id}')">View</button></td>
+                                 <td><button onclick="updateCustomer('${customer.id}')">Update</button></td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to open a modal with full details of the selected customer
+        function viewCustomer(customerId) {
+            // Find the selected customer from the array
+            const selectedCustomer = customers.find(customer => customer.id === customerId);
+
+            // Create a modal element
+            const modal = document.createElement('div');
+            modal.classList.add('modal', 'fixed', 'top-0', 'left-0', 'w-full', 'h-full', 'bg-gray-800', 'bg-opacity-50', 'flex', 'justify-center', 'items-center');
+
+            // Create modal content
+            modal.innerHTML = `
+                <div class="bg-white p-6 rounded-md">
+                    <h2 class="text-2xl font-semibold mb-4">Customer Details</h2>
+                    <p><strong>ID:</strong> ${selectedCustomer.id}</p>
+                    <p><strong>Name:</strong> ${selectedCustomer.name}</p>
+                    <p><strong>Phone Number:</strong> ${selectedCustomer.phone_number}</p>
+                    <p><strong>Email:</strong> ${selectedCustomer.email}</p>
+                    <p><strong>Status:</strong> ${selectedCustomer.status}</p>
+                    <button class="close-button">Close</button>
+                </div>
+            `;
+
+            // Append modal to the body
+            document.body.appendChild(modal);
+
+            // Attach click event to the modal for closing
+            modal.addEventListener('click', function (event) {
+                if (event.target.classList.contains('close-button')) {
+                    closeModal();
+                }
+            });
+
+            // Function to close the modal
+            function closeModal() {
+                document.body.removeChild(modal);
+            }
+
+            // Function to open a new page for updating customer details
+            function updateCustomer(customerId) {
+                window.location.href = `/update_customer_details/${customerId}`;
+            }
+        }
+    </script>
+</body>
+</html>
