@@ -1,3 +1,4 @@
+from .models import DryCleaningMachine, NormalMachine
 from .models import CustomerManager, Customer
 from django.shortcuts import render
 from django.http import Http404
@@ -72,7 +73,7 @@ def create_customer(request):
 
 
 def machine_list(request):
-    pass
+    return render(request, 'machine_list.html')
 
 
 def reports(request):
@@ -113,3 +114,77 @@ def update_customer_details(request, customer_id):
     else:
         # Handle the case where the customer with the given ID is not found
         return JsonResponse({'error': 'Customer not found'}, status=404)
+
+
+def read_machines_from_json():
+    try:
+        with open('Application\static\machine.json', 'r') as file:
+            machines_data = json.load(file)
+    except FileNotFoundError:
+        machines_data = []
+
+    machines = []
+
+    for machine_data in machines_data:
+        if machine_data['type'] == 'dry_cleaning':
+            machine = DryCleaningMachine(
+                name=machine_data['name'], capacity=machine_data['capacity'], is_free=machine_data['is_free'])
+        elif machine_data['type'] == 'normal':
+            machine = NormalMachine(
+                name=machine_data['name'], capacity=machine_data['capacity'], is_free=machine_data['is_free'])
+        else:
+            continue
+
+        machines.append(machine)
+
+    return machines
+
+
+def write_machine_to_json(machine):
+    try:
+        with open('Application\static\machine.json', 'r') as file:
+            machines_data = json.load(file)
+    except FileNotFoundError:
+        machines_data = []
+
+    machine_data = {
+        'name': machine.name,
+        'capacity': machine.capacity,
+        'is_free': machine.is_free,
+        'type': machine.get_type(),
+    }
+
+    machines_data.append(machine_data)
+
+    with open('Application\static\machine.json', 'w') as file:
+        json.dump(machines_data, file, indent=2)
+
+
+def machine_list(request):
+    machines = read_machines_from_json()
+
+    return render(request, 'machine_list.html', {'machines': machines})
+
+
+def create_machine(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        capacity = int(request.POST.get('capacity'))
+        is_free = bool(request.POST.get('is_free'))
+
+        machine_type = request.POST.get('type')
+        if machine_type == 'dry_cleaning':
+            machine = DryCleaningMachine(
+                name=name, capacity=capacity, is_free=is_free)
+        elif machine_type == 'normal':
+            machine = NormalMachine(
+                name=name, capacity=capacity, is_free=is_free)
+        else:
+            return redirect('machine_list')
+
+        # Add the new machine to the machines list and save to JSON file
+        machines = read_machines_from_json()
+        machines.append(machine)
+        write_machine_to_json(machine)
+
+    return render(request, 'add_machine.html')

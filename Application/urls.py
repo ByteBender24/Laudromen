@@ -11,5 +11,7 @@ urlpatterns = [
     path('machine_list/', views.machine_list, name='machine_list'),
     path('reports/', views.reports, name='generate_reports'),
     path('booking/', views.booking , name='booking'),
-    path('update_customer_details/<customer_id>/', views.update_customer_details, name='update_customer')
+    path('update_customer_details/<customer_id>/', views.update_customer_details, name='update_customer'),
+    path('machines/', views.machine_list, name='machine_list'),
+    path('create_machine/', views.create_machine, name='create_machine'),
 ]

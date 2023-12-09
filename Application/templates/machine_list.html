@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Machines</title>
+    <style>
+      .navbar {
+        overflow: hidden;
+        background-color: #333;
+      }
+
+      .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+
+      .navbar a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+
+      .navbar ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .navbar li {
+        float: left;
+      }
+
+      .machine-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .machine {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+        width: 200px; /* Adjust width as needed */
+      }
+
+      .dry-cleaning {
+        background-color: #a3d2ff; /* Light blue background for dry cleaning machines */
+      }
+
+      .normal-machine {
+        background-color: #a3ffb2; /* Light green background for normal machines */
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <ul>
+        <li><a href="{% url 'machine_list' %}">Home</a></li>
+        <li style="float: right">
+          <a href="{% url 'create_machine' %}">Add Machine</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="machine-container">
+      {% for machine in machines %}
+      <div
+        class="machine {% if machine.get_type == 'dry_cleaning' %}dry-cleaning{% else %}normal-machine{% endif %}"
+      >
+        <p>Name: {{ machine.name }}</p>
+        <p>Capacity: {{ machine.capacity }}</p>
+        <p>Free: {% if machine.is_free %}Yes{% else %}No{% endif %}</p>
+        <button onclick="viewDetails('{{ machine.name }}')">View</button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modal-content"></p>
+      </div>
+    </div>
+
+    <script>
+      function openForm() {
+        document.getElementById("form-container").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+      }
+
+      function viewDetails(name) {
+        // Fetch machine data from JSON file
+        fetch("path/to/machines.json")
+          .then((response) => response.json())
+          .then((data) => {
+            // Assuming the data is an array of machine objects
+            const machinesData = data;
+
+            function viewDetails(name) {
+              const machine = machinesData.find((m) => m.name === name);
+
+              if (machine) {
+                const content = `Name: ${machine.name}<br>Capacity: ${
+                  machine.capacity
+                }<br>Free: ${machine.is_free ? "Yes" : "No"}`;
+                document.getElementById("modal-content").innerHTML = content;
+                document.getElementById("modal").style.display = "block";
+              }
+            }
+          })
+          .catch((error) =>
+            console.error("Error fetching machine data:", error)
+          );
+      }
+    </script>
+  </body>
+</html>

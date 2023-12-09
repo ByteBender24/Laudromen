@@ -1,0 +1,8 @@
+[
+  {
+    "name": "DM1",
+    "capacity": 5,
+    "is_free": true,
+    "type": "dry_cleaning"
+  }
+]
