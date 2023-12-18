@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Bookings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        /* Style for each booking container */
+        .bookings-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Adjust the gap between containers */
+            justify-content: space-evenly; /* Adjust alignment */
+        }
+
+        .booking-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            width: 230px; /* Adjust width as needed */
+            box-sizing: border-box;
+        }
+
+        /* Additional styling for booking details */
+        .booking-container p {
+            margin: 5px 0;
+        }
+
+        .booking-container a {
+            color: #3498db;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .booking-container a:hover {
+            text-decoration: underline;
+        }
+
+        /* Styling for paid and not paid */
+        .paid {
+            background-color: #a5d6a7; /* Greenish color for paid */
+        }
+
+        .not-paid {
+            background-color: #ffcdd2; /* Reddish color for not paid */
+        }
+
+        /* Responsive layout for small screens */
+        @media screen and (max-width: 600px) {
+            .booking-container {
+                width: 100%; /* Full width on smaller screens */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Bookings</h2>
+
+    <div class="bookings-container">
+        {% for booking in bookings %}
+        <div class="booking-container {% if booking.payment_status %}paid{% else %}not-paid{% endif %}">
+            <p><strong>Booking ID: </strong>{{ booking.booking_id }}</p>
+            <p><strong>Customer ID: </strong>{{ booking.customer_id }}</p>
+            <p><strong>dry_quantity: </strong>{{ booking.dry_quantity }}</p>
+            <p><strong>clothes_quantity: </strong>{{ booking.clothes_quantity }}</p>
+            <p><strong>shoes_quantity: </strong>{{ booking.shoes_quantity }}</p>
+            <p><strong>bags_quantity: </strong>{{ booking.bags_quantity }}</p>
+            <p><strong>Total Cost: </strong>{{ booking.total_cost }}</p>
+            <p><strong>Payment Status: </strong>{% if booking.payment_status %}Paid{% else %}Not Paid{% endif %}</p>
+            <a href="{% url 'update_booking' booking.booking_id %}">Edit Booking</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

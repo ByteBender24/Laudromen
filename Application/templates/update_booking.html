@@ -1,0 +1,83 @@
+<!-- payment_gateway.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="checkbox"] {
+            margin-bottom: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Optional: Add responsive styles for smaller screens */
+        @media screen and (max-width: 600px) {
+            form {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Booking Details</h2>
+
+    <p>Booking ID: {{ booking.booking_id }}</p>
+    <p>Customer ID: {{ booking.customer_id }}</p>
+
+    <p>Dry Quantity: {{ booking.dry_quantity }}</p>
+    <p>Clothes Quantity: {{ booking.clothes_quantity }}</p>
+    <p>Shoes Quantity: {{ booking.shoes_quantity }}</p>
+    <p>Bags Quantity: {{ booking.bags_quantity }}</p>
+
+
+    <p>Total Cost: {{ booking.total_cost }}</p>
+
+    <form action="{% url 'update_booking' booking.booking_id %}" method="post">
+        {% csrf_token %}
+
+        <label for="confirm_payment">Confirm Payment:</label>
+        <input type="checkbox" name="confirm_payment" required>
+
+        <input type="submit" value="Confirm Payment">
+    </form>
+</body>
+</html>

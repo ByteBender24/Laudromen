@@ -1,0 +1,203 @@
+<!-- create_booking.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Booking</title>
+
+    <!-- Add your CSS styles here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2, h3 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+
+        form {
+            margin-top: 20px;
+            display: table;
+            width: 100%;
+        }
+
+        label, input {
+            display: table-cell;
+            padding: 8px;
+        }
+
+        input[type="submit"] {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .total-cost-row {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Create Booking</h2>
+
+    <!-- Machine Availability Table -->
+    <h3>Machine Availability</h3>
+    <table border="1">
+        <tr>
+            <th>Machine Type</th>
+            <th>Available</th>
+        </tr>
+        <tr>
+            <td>Dry Cleaning Machines</td>
+            <td>{{ free_machines.dry_free }}</td>
+        </tr>
+        <tr>
+            <td>Normal Machines</td>
+            <td>{{ free_machines.normal_free }}</td>
+        </tr>
+    </table>
+
+    <form action="{% url 'create_booking' %}" method="POST">
+    <h3>Price Rates</h3>
+    <table border="1">
+        <tr>
+            <th>Laundry Type</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total Cost</th> <!-- New column for Total Cost -->
+        </tr>
+        <tr>
+            <td>Dry Cleaning</td>
+            <td id="dry_price">{{ price_data.price_rates.dry_cleaning }}</td>
+            <td><input type="number" name="dry_quantity" id="dry_quantity" min="0" max="10" value="0"  required /></td>
+            <td id="dryTotal"></td> <!-- Total Cost column -->
+        </tr>
+        <tr>
+            <td>Clothes</td>
+            <td id="clothes_price">{{ price_data.price_rates.clothes }}</td>
+            <td><input type="number" name="clothes_quantity" id="clothes_quantity" min="0" max="10" value="0" required /></td>
+            <td id="clothesTotal"></td> <!-- Total Cost column -->
+        </tr>
+        <tr>
+            <td>Shoes</td>
+            <td id="shoes_price">{{ price_data.price_rates.shoes }}</td>
+            <td><input type="number" name="shoes_quantity" id="shoes_quantity" min="0" max="10" value="0" required /></td>
+            <td id="shoesTotal"></td> <!-- Total Cost column -->
+        </tr>
+        <tr>
+            <td>Bags</td>
+            <td id="bags_price">{{ price_data.price_rates.bags }}</td>
+            <td><input type="number" name="bags_quantity" id="bags_quantity" min="0" max="10" value="0" required /></td>
+            <td id="bagsTotal"></td> <!-- Total Cost column -->
+        </tr>
+        <!-- Total Cost Row -->
+        <tr class="total-cost-row">
+            <td colspan="3">Total Cost</td>
+            <td id="totalCost"></td>
+        </tr>
+    </table>
+    
+
+ <button id="calculateTotalBtn">Calculate Total</button>
+
+    <!-- Booking Form -->
+    
+        {% csrf_token %}
+        <label for="customer_id">Customer ID:</label>
+        <input type="text" name="customer_id" required />
+
+        <input type="submit" value="Create Booking" />
+    </form>
+
+   
+
+<script>
+    // Declare quantities object here
+    const quantities = {
+        'dry': 0,
+        'clothes': 0,
+        'shoes': 0,
+        'bags': 0,
+    };
+
+    // Function to update total cost when quantity changes
+    function updateTotalCost(priceId, totalId) {
+    const quantity = quantities[priceId];
+    console.log(quantities)
+    const priceElement = document.getElementById(priceId + '_price');
+
+    if (priceElement) {
+        const price = parseFloat(priceElement.innerHTML); // Use value instead of innerText for input elements
+        console.log(price)
+        const total = price * quantity; // Corrected the order of multiplication
+        document.getElementById(totalId).innerText = total.toFixed(2);
+        updateOverallTotal();
+    } else {
+        console.error('Price element not found for ID:', priceId);
+    }
+}
+    // Function to update the overall total cost
+    function updateOverallTotal() {
+        const dryTotal = parseFloat(document.getElementById('dryTotal').innerText) || 0;
+        const clothesTotal = parseFloat(document.getElementById('clothesTotal').innerText) || 0;
+        const shoesTotal = parseFloat(document.getElementById('shoesTotal').innerText) || 0;
+        const bagsTotal = parseFloat(document.getElementById('bagsTotal').innerText) || 0;
+
+        const overallTotal = dryTotal + clothesTotal + shoesTotal + bagsTotal;
+        document.getElementById('totalCost').innerText = overallTotal.toFixed(2);
+    }
+
+    // Add event listener for the "Calculate Total" button
+    document.getElementById('calculateTotalBtn').addEventListener('click', function () {
+        // Loop through each price type and update the total
+        for (const priceId in quantities) {
+            const totalId = priceId + 'Total';
+            updateTotalCost(priceId, totalId);
+        }
+    });
+
+    // Add event listeners for quantity input changes
+    document.addEventListener('input', function (event) {
+        const target = event.target;
+        const name = target.name;
+        const id = target.id; // Get the id attribute
+
+        if (name.endsWith('_quantity')) {
+            // Use the id attribute to construct the priceId
+            const priceId = id.replace('_quantity', '');
+            const totalId = priceId + 'Total';
+
+            // Update the quantities object
+            quantities[priceId] = parseFloat(target.value) || 0;
+
+            // Call the updateTotalCost function
+            updateTotalCost(priceId, totalId);
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+[
+    {
+        "booking_id": "LE1735",
+        "customer_id": "LEW299854",
+        "dry_quantity": 0,
+        "clothes_quantity": 6,
+        "shoes_quantity": 6,
+        "bags_quantity": 7,
+        "total_cost": 321.0,
+        "payment_status": true
+    }
+]   

@@ -1,7 +1,31 @@
 [
   {
-    "name": "DM1",
+    "name": "NM1",
     "capacity": 5,
+    "is_free": true,
+    "type": "normal"
+  },
+  {
+    "name": "DM1",
+    "capacity": 8,
+    "is_free": false,
+    "type": "dry_cleaning"
+  },
+  {
+    "name": "DM2",
+    "capacity": 2,
+    "is_free": true,
+    "type": "dry_cleaning"
+  },
+  {
+    "name": "NM2",
+    "capacity": 9,
+    "is_free": true,
+    "type": "normal"
+  },
+  {
+    "name": "DM3",
+    "capacity": 6,
     "is_free": true,
     "type": "dry_cleaning"
   }

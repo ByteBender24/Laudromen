@@ -1,0 +1,49 @@
+<!-- machine_details.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .machine-details {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+        }
+
+        .dry-cleaning {
+            background-color: #a3d2ff; /* Light blue background for dry cleaning machines */
+        }
+
+        .normal-machine {
+            background-color: #a3ffb2; /* Light green background for normal machines */
+        }
+
+        .back-link {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Machine Details</h2>
+
+    <div class="machine-details {% if machine.get_type == 'dry_cleaning' %}dry-cleaning{% else %}normal-machine{% endif %}">
+        <p><strong>Name:</strong> {{ machine.name }}</p>
+        <p><strong>Capacity:</strong> {{ machine.capacity }}</p>
+        <p><strong>Free:</strong> {% if machine.is_free %}Yes{% else %}No{% endif %}</p>
+    </div>
+
+    <a href="{% url 'machine_list' %}" class="back-link">Back to Machine List</a>
+</body>
+</html>
