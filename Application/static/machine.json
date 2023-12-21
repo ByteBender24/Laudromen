@@ -28,5 +28,11 @@
     "capacity": 6,
     "is_free": true,
     "type": "dry_cleaning"
+  },
+  {
+    "name": "DM3",
+    "capacity": 7,
+    "is_free": true,
+    "type": "dry_cleaning"
   }
 ]

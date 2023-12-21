@@ -19,5 +19,12 @@
     "phone_number": "9988448833",
     "email": "hariharand@gmail.com",
     "status": "IN"
+  },
+  {
+    "id": "HAY862923",
+    "name": "Hayden",
+    "phone_number": "6232781923",
+    "email": "hayden@gmail.com",
+    "status": "OUT"
   }
 ]
